@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Planetary Times</title>
+	<style>
+		img {
+			height: 50px;
+		}
+		table {
+			width: 25%;
+			border-collapse: collapse;
+			border-color: black;
+			border-style: solid;
+			border-width: thick;
+		}
+		tr {
+			width: 25%;
+			border-collapse: collapse;
+			border-color: black;
+			border-style: solid;
+			border-width: medium;
+			text-align: center;
+		}
+	</style>
+</head>
+
+<body>
+	<center>
+	<h1>Planetary Times</h1>
+	<table>
+		<tbody id="data">
+			<tr>
+				<td>Mercury</td>
+				<td id="mercury">Loading...</td>
+				<td><img src="mercurysmol.png"></td>
+		</tr>
+			<tr>
+				<td>Venus</td>
+				<td id="venus">Loading...</td>
+				<td><img src="venussmol.png"></td>
+		</tr>
+			<tr>
+				<td>Earth</td>
+				<td id="earth">Loading...</td>
+				<td><img src="earthsmol.png"></td>
+		</tr>
+			<tr>
+				<td>Mars</td>
+				<td id="mars">Loading...</td>
+				<td><img src="marssmol.png"></td>
+		</tr>
+			<tr>
+				<td>Jupiter</td>
+				<td id="jupiter">Loading...</td>
+				<td><img src="jupitersmol.png"></td>
+		</tr>
+			<tr>
+				<td>Saturn</td>
+				<td id="saturn">Loading...</td>
+				<td><img src="saturnsmol.png"></td>
+		</tr>
+			<tr>
+				<td>Uranus</td>
+				<td id="uranus">Loading...</td>
+				<td><img src="uranussmol.png"></td>
+		</tr>
+			<tr>
+				<td>Neptune</td>
+				<td id="neptune">Loading...</td>
+				<td><img src="neptunesmol.png"></td>
+		</tr>
+			<tr>
+				<td>Pluto</td>
+				<td id="pluto">Loading...</td>
+				<td><img src="plutosmol.png"></td>
+		</tr>
+		</tbody>
+	</table>
+		<hr>
+		<h1>Planetary Age Calculator</h1>
+		<form id="date-form">
+			<label for="years">Years:</label>
+			<input type="number" id="years" name="years" min="0" required><br>
+			<label for="months">Months:</label>
+			<input type="number" id="months" name="months" min="0" max="11" required><br>
+			<label for="days">Days:</label>
+			<input type="number" id="days" name="days" min="0" max="29" required><br><br>
+
+			<label for="init-planet">Starting Planet:</label>
+			<select id="init-planet" name="init-planet" onchange="updateS()">
+				<option value="58.65">Mercury</option>
+				<option value="243.02">Venus</option>
+				<option value="1.0">Earth</option>
+				<option value="687.0">Mars</option>
+				<option value="4333.0">Jupiter</option>
+				<option value="10756.0">Saturn</option>
+				<option value="30687.0">Uranus</option>
+				<option value="60190.0">Neptune</option>
+				<option value="90560.0">Pluto</option>
+			</select><br>
+			<label for="final-planet">Target Planet:</label>
+			<select id="final-planet" name="final-planet" onchange="updateS()">
+			</select><br><br>
+
+			<button type="button" onclick="calcDay()">Go!</button>
+		</form><br>
+
+		<p font-size="4" id="res"></p>
+	<script>
+		const dayLengths = {
+			'Mercury': 24 / 1407.6 * 24,
+			'Venus': 24 / 5832.5 * 24,
+			'Earth': 24.0,
+			'Mars': 24 / 24.6 * 24,
+			'Jupiter': 24 / 9.84 * 24,
+			'Saturn': 24 / 10.75 * 24,
+			'Uranus': 24 / 17.28 * 24,
+			'Neptune': 24 / 16.08 * 24,
+			'Pluto': 24 / 153.36 * 24
+		};
+	function calc(planet){
+		const local = new Date();
+		const localOff = local.getTimezoneOffset() * 24 * 6071.45;
+		const origEarthTime = local.getTime();
+		const earthTime = origEarthTime + localOff;
+		const earthMilli = 24 * 3600000;
+		const planetMilli = dayLengths[planet] * 3600000;
+		let planetTime = earthTime / earthMilli * planetMilli;
+		planetTime += localOff * 3600000;
+		const planetDate = new Date(planetTime);
+		return `${String(planetDate.getUTCHours()).padStart(2,'0')}:${String(planetDate.getUTCMinutes()).padStart(2,'0')}:${String(planetDate.getUTCSeconds()).padStart(2,'0')}`;
+	}
+		function update(){
+			const planets = Object.keys(dayLengths);
+			const earthTime = new Date();
+			planets.forEach(planet => {
+				const planetLower = planet.toLowerCase();
+				const timeCell = document.getElementById(`${planetLower}`);
+				const time = calc(planet);
+				timeCell.textContent = time;
+			});
+		}
+		const mults = ["58.65", "243.02", "1.0", "687.0", "4333.0", "10756.0", "30687.0", "60190.0", "90560.0"];
+		const names = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto"];
+		let ind = 0;
+		function updateS(){
+			const initM = document.getElementById('init-planet');
+			const finalM = document.getElementById('final-planet');
+			const initMult = initM.value;
+			const finalMult = finalM.value;
+			initM.innerHTML = "";
+			finalM.innerHTML = "";
+			mults.forEach(mult => {
+				if (mult !== finalMult){
+					const opt = document.createElement('option');
+					opt.value = mult;
+					opt.text = names[ind];
+					if (mult === initMult){
+						opt.selected = true;
+					}
+					initM.appendChild(opt);
+				}
+				if (ind === 8){
+					ind = 0;
+				} else {
+					ind++;
+				}
+			});
+			ind = 0;
+			mults.forEach(mult => {
+				if (mult !== initMult){
+					const opt = document.createElement('option');
+					opt.value = mult;
+					opt.text = names[ind];
+					if (mult === finalMult){
+						opt.selected = true;
+					}
+					finalM.appendChild(opt);
+				}
+				if (ind === 8){
+					ind = 0;
+				} else {
+					ind++;
+				}
+			});
+		}
+		updateS();
+		function calcDay() {
+			const years = parseInt(document.getElementById('years').value);
+			const months = parseInt(document.getElementById('months').value);
+			const days = parseInt(document.getElementById('days').value);
+			const initM = parseFloat(document.getElementById('init-planet').value);
+			const finalM = parseFloat(document.getElementById('final-planet').value);
+			const total = ((years * 365) + months * 30) + days;
+			const baseD = total * initM;
+			const multD = baseD / finalM;
+			if (multD < 1){
+				const totalS = multD * 24 * 3600;
+				const resultH = Math.floor(totalS / 3600);
+				const resultM = Math.floor((totalS % 3600) / 60);
+				const resultS = Math.floor((totalS % 3600) % 60);
+				document.getElementById('res').textContent = `${resultH}h, ${resultM}m, ${resultD}s`;
+			} else {
+				const resultY = Math.floor(multD / 365);
+				const resultM = Math.floor((multD % 365) / 30);
+				const resultD = Math.round((multD % 365) % 30);
+				document.getElementById('res').textContent = `${resultY}y, ${resultM}m, ${resultD}d`;
+			}
+			
+		}
+		setInterval(update, 100);
+	</script></center>
+</body>
+</html>
