@@ -192,19 +192,21 @@
 			const days = parseInt(document.getElementById('days').value);
 			const initM = parseFloat(document.getElementById('init-planet').value);
 			const finalM = parseFloat(document.getElementById('final-planet').value);
-			const total = ((years * 365) + months * 30) + days;
+			const total = (years * 365) + (months * 30) + days;
 			const baseD = total * initM;
 			const multD = baseD / finalM;
 			if (multD < 1){
 				const totalS = multD * 24 * 3600;
 				const resultH = Math.floor(totalS / 3600);
-				const resultM = Math.floor((totalS % 3600) / 60);
-				const resultS = Math.floor((totalS % 3600) % 60);
+				let remain = totalS % 3600;
+				const resultM = Math.floor(remain / 60);
+				const resultS = remain % 30
 				document.getElementById('res').textContent = `${resultH}h, ${resultM}m, ${resultD}s`;
 			} else {
 				const resultY = Math.floor(multD / 365);
-				const resultM = Math.floor((multD % 365) / 30);
-				const resultD = Math.round((multD % 365) % 30);
+				let remain = multD % 365;
+				const resultM = Math.floor(remain / 30);
+				const resultD = remain % 30;
 				document.getElementById('res').textContent = `${resultY}y, ${resultM}m, ${resultD}d`;
 			}
 			
