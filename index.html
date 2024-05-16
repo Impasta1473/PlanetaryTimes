@@ -200,13 +200,13 @@
 				const resultH = Math.floor(totalS / 3600);
 				let remain = totalS % 3600;
 				const resultM = Math.floor(remain / 60);
-				const resultS = remain % 30
+				const resultS = Math.floor(remain % 30);
 				document.getElementById('res').textContent = `${resultH}h, ${resultM}m, ${resultD}s`;
 			} else {
 				const resultY = Math.floor(multD / 365);
 				let remain = multD % 365;
 				const resultM = Math.floor(remain / 30);
-				const resultD = remain % 30;
+				const resultD = Math.floor(remain % 30);
 				document.getElementById('res').textContent = `${resultY}y, ${resultM}m, ${resultD}d`;
 			}
 			
