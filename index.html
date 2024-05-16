@@ -193,8 +193,8 @@
 			const initM = parseFloat(document.getElementById('init-planet').value);
 			const finalM = parseFloat(document.getElementById('final-planet').value);
 			const total = (years * 365) + (months * 30) + days;
-			const baseD = total * initM;
-			const multD = baseD / finalM;
+			const baseD = total / initM;
+			const multD = baseD * finalM;
 			if (multD < 1){
 				const totalS = multD * 24 * 3600;
 				const resultH = Math.floor(totalS / 3600);
